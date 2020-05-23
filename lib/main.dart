@@ -10,7 +10,6 @@ void main() {
 }
 
 class HomePage extends StatefulWidget {
-  @override
   _HomePageState createState() => _HomePageState();
 }
 
@@ -27,7 +26,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
   void initState() {
     super.initState();
     getDate();
@@ -49,7 +47,7 @@ class _HomePageState extends State<HomePage> {
                   backgroundImage: NetworkImage(userData[index]["avatar"]),
                 ),
                 Text(
-                    "${userData[index]["first_name"]} ${userData[index]["last_name"]}")
+                    "${index} ${userData[index]["first_name"]} ${userData[index]["last_name"]}")
               ],
             ),
           );
