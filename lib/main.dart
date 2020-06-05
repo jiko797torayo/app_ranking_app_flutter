@@ -16,7 +16,12 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          leading: Icon(Icons.arrow_drop_down),
+          leading: FlatButton(
+            child: Icon(Icons.arrow_drop_down),
+            onPressed: () {
+              // todo
+            },
+          ),
           title: const Text('iOS Free App Ranking'),
           actions: <Widget>[
             SizedBox(
@@ -24,6 +29,9 @@ class MyApp extends StatelessWidget {
               child: FlatButton(
                 child: Image.asset('icons/flags/png/us.png',
                     package: 'country_icons'),
+                onPressed: () {
+                  // todo
+                },
               ),
             ),
           ],
