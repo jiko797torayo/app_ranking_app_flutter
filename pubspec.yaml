@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.12.1
+  flutter_svg: ^0.17.4
+  country_icons: ^1.1.1
 
   cupertino_icons: ^0.1.3
 
