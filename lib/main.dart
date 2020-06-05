@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart'; //google提供のUIデザイン
-import 'package:flutter_svg/flutter_svg.dart'; //SVG画像を使う
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  final items = List<String>.generate(100, (i) => "${i + 1} TikTok");
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,7 +37,52 @@ class MyApp extends StatelessWidget {
             ),
           ],
         ),
-        body: Container(),
+        body: Container(
+          child: FlatButton(
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(12.0),
+                    itemCount: items.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                              'https://is4-ssl.mzstatic.com/image/thumb/Purple123/v4/71/33/58/7133589f-7bee-dff0-c0e1-324aeb3df7fe/AppIcon_TikTok-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/200x200bb.png'),
+                        ),
+                        title: Column(
+                          children: <Widget>[
+                            Row(
+                              children: [
+                                Text('${items[index]}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('ショートムービー・コミュニティー',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () {
+              // todo
+            },
+          ),
+        ),
       ),
     );
   }
