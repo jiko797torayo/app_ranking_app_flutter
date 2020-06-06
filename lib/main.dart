@@ -24,13 +24,14 @@ class _MyAppState extends State<MyApp> {
   List rankingData;
 
   // 文字列の変数を定義
-  String countryCode;
+  String currentCode;
+  String currentType;
 
   // 非同期処理を定義
-  Future getData({String code = 'us'}) async {
+  Future getData({String code = 'us', String type = 'top-free'}) async {
     // APIを叩いてランキング情報を取得
     http.Response response = await http.get(
-        "https://rss.itunes.apple.com/api/v1/$code/ios-apps/top-free/all/200/explicit.json");
+        "https://rss.itunes.apple.com/api/v1/$code/ios-apps/$type/all/200/explicit.json");
     if (response.statusCode == 200) {
       // 取得した情報をデコード
       data = json.decode(response.body);
@@ -39,12 +40,14 @@ class _MyAppState extends State<MyApp> {
       // ランキング情報を変数に格納
       setState(() {
         rankingData = feedData["results"];
-        countryCode = code;
+        currentCode = code;
+        currentType = type;
       });
     } else {
       setState(() {
         rankingData = [];
-        countryCode = '';
+        currentCode = '';
+        currentType = '';
       });
     }
   }
@@ -58,8 +61,12 @@ class _MyAppState extends State<MyApp> {
     getData();
   }
 
-  void choiceAction(String code) {
-    getData(code: code);
+  void choiceCountryAction(String code) {
+    getData(code: code, type: currentType);
+  }
+
+  void choiceTypeAction(String type) {
+    getData(code: currentCode, type: type);
   }
 
   @override
@@ -139,23 +146,29 @@ class _MyAppState extends State<MyApp> {
         home: Scaffold(
           appBar: AppBar(
             centerTitle: false,
-            leading: FlatButton(
+            leading: PopupMenuButton<String>(
               child: Icon(Icons.arrow_drop_down),
-              onPressed: () {
-                // todo
+              onSelected: choiceTypeAction,
+              itemBuilder: (BuildContext context) {
+                return Constants.types.map((type) {
+                  return PopupMenuItem<String>(
+                    value: type['name'],
+                    child: Text(type['title']),
+                  );
+                }).toList();
               },
             ),
-            title: const Text('Top Free iPhone Apps'),
+            title: Text(Constants.type_titles[currentType]),
             actions: <Widget>[
               PopupMenuButton<String>(
                 child: SizedBox(
                   width: 70,
                   child: FlatButton(
-                    child: Image.asset('icons/flags/png/$countryCode.png',
+                    child: Image.asset('icons/flags/png/$currentCode.png',
                         package: 'country_icons'),
                   ),
                 ),
-                onSelected: choiceAction,
+                onSelected: choiceCountryAction,
                 itemBuilder: (BuildContext context) {
                   return Constants.countries.map((country) {
                     return PopupMenuItem<String>(

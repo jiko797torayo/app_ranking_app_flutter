@@ -262,4 +262,23 @@ class Constants {
     VN,
     YE,
   ];
+
+  static const Map topFree = {
+    'name': 'top-free',
+    'title': 'Top Free iPhone Apps'
+  };
+  static const Map topPaid = {
+    'name': 'top-paid',
+    'title': 'Top Paid iPhone Apps'
+  };
+
+  static const List types = [
+    topFree,
+    topPaid,
+  ];
+
+  static const Map type_titles = {
+    'top-free': 'Top Free iPhone Apps',
+    'top-paid': 'Top Paid iPhone Apps'
+  };
 }
