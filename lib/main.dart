@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http; //httpリクエスト用
 import 'dart:async'; //非同期処理用
 import 'dart:convert'; //httpレスポンスをJSON形式に変換用
 import 'dart:collection'; //LinkedHashMap
+import 'package:url_launcher/url_launcher.dart'; //
 
 void main() {
   runApp(MyApp());
@@ -148,51 +149,49 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           body: Container(
-            child: FlatButton(
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(12.0),
-                      itemCount: rankingData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                  rankingData[index]['artworkUrl100'])),
-                          title: Column(
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '${index + 1} ${rankingData[index]['name']}',
-                                  softWrap: false,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(12.0),
+                    itemCount: rankingData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.network(
+                                rankingData[index]['artworkUrl100'])),
+                        title: Column(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '${index + 1} ${rankingData[index]['name']}',
+                                softWrap: false,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    rankingData[index]['genres'][0]['name'],
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    )),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(),
-                    ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child:
+                                  Text(rankingData[index]['genres'][0]['name'],
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      )),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          launch(rankingData[index]['url']);
+                        },
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
                   ),
-                ],
-              ),
-              onPressed: () {
-                // todo
-              },
+                ),
+              ],
             ),
           ),
         ),
