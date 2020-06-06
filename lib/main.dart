@@ -124,20 +124,22 @@ class _MyAppState extends State<MyApp> {
                                   rankingData[index]['artworkUrl100'])),
                           title: Column(
                             children: <Widget>[
-                              Row(
-                                children: [
-                                  Text(
-                                      '${index + 1} ${rankingData[index]['name']}'),
-                                ],
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${index + 1} ${rankingData[index]['name']}',
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  Text(rankingData[index]['genres'][0]['name'],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      )),
-                                ],
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    rankingData[index]['genres'][0]['name'],
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    )),
                               ),
                             ],
                           ),
