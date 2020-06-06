@@ -25,15 +25,20 @@ class _MyAppState extends State<MyApp> {
     // APIを叩いてランキング情報を取得
     http.Response response = await http.get(
         "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/200/explicit.json");
+    if (response.statusCode == 200) {
+      // 取得した情報をデコード
+      data = json.decode(response.body);
+      feedData = data["feed"];
 
-    // 取得した情報をデコード
-    data = json.decode(response.body);
-    feedData = data["feed"];
-
-    // ランキング情報を変数に格納
-    setState(() {
-      rankingData = feedData["results"];
-    });
+      // ランキング情報を変数に格納
+      setState(() {
+        rankingData = feedData["results"];
+      });
+    } else {
+      setState(() {
+        rankingData = [];
+      });
+    }
   }
 
   // 最初に一度だけする処理
@@ -76,7 +81,41 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
           ),
-          body: Container(),
+          body: Padding(
+              padding: EdgeInsets.all(10), child: Text('Now Loading...')),
+        ),
+      );
+    } else if (rankingData.length == 0) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.white,
+        ),
+        home: Scaffold(
+          appBar: AppBar(
+            centerTitle: false,
+            leading: FlatButton(
+              child: Icon(Icons.arrow_drop_down),
+              onPressed: () {
+                // todo
+              },
+            ),
+            title: const Text('Top Free iPhone Apps'),
+            actions: <Widget>[
+              SizedBox(
+                width: 70,
+                child: FlatButton(
+                  child: Image.asset('icons/flags/png/us.png',
+                      package: 'country_icons'),
+                  onPressed: () {
+                    // todo
+                  },
+                ),
+              ),
+            ],
+          ),
+          body: Padding(
+              padding: EdgeInsets.all(10), child: Text('Sorry, no data found')),
         ),
       );
     } else {
