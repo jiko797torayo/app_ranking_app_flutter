@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http; //httpリクエスト用
 import 'dart:async'; //非同期処理用
 import 'dart:convert'; //httpレスポンスをJSON形式に変換用
 import 'dart:collection'; //LinkedHashMap
-import 'package:url_launcher/url_launcher.dart'; //
+import 'package:url_launcher/url_launcher.dart'; //リンク先へ遷移
+import 'Constants.dart'; //定数用ファイル
 
 void main() {
   runApp(MyApp());
+  print(Constants.countries.map((country) => country['name']).toList());
 }
 
 class MyApp extends StatefulWidget {
@@ -21,11 +23,14 @@ class _MyAppState extends State<MyApp> {
   // 配列の変数を定義
   List rankingData;
 
+  // 文字列の変数を定義
+  String countryCode;
+
   // 非同期処理を定義
-  Future getData() async {
+  Future getData({String code = 'us'}) async {
     // APIを叩いてランキング情報を取得
     http.Response response = await http.get(
-        "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/200/explicit.json");
+        "https://rss.itunes.apple.com/api/v1/$code/ios-apps/top-free/all/200/explicit.json");
     if (response.statusCode == 200) {
       // 取得した情報をデコード
       data = json.decode(response.body);
@@ -34,10 +39,12 @@ class _MyAppState extends State<MyApp> {
       // ランキング情報を変数に格納
       setState(() {
         rankingData = feedData["results"];
+        countryCode = code;
       });
     } else {
       setState(() {
         rankingData = [];
+        countryCode = '';
       });
     }
   }
@@ -49,6 +56,10 @@ class _MyAppState extends State<MyApp> {
 
     // 情報を取得処理を実行
     getData();
+  }
+
+  void choiceAction(String code) {
+    getData(code: code);
   }
 
   @override
@@ -136,15 +147,42 @@ class _MyAppState extends State<MyApp> {
             ),
             title: const Text('Top Free iPhone Apps'),
             actions: <Widget>[
-              SizedBox(
-                width: 70,
-                child: FlatButton(
-                  child: Image.asset('icons/flags/png/us.png',
-                      package: 'country_icons'),
-                  onPressed: () {
-                    // todo
-                  },
+              PopupMenuButton<String>(
+                child: SizedBox(
+                  width: 70,
+                  child: FlatButton(
+                    child: Image.asset('icons/flags/png/$countryCode.png',
+                        package: 'country_icons'),
+                  ),
                 ),
+                onSelected: choiceAction,
+                itemBuilder: (BuildContext context) {
+                  return Constants.countries.map((country) {
+                    return PopupMenuItem<String>(
+                        value: country['code'],
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 30,
+                              child: Image.asset(
+                                  'icons/flags/png/${country['code']}.png',
+                                  package: 'country_icons'),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10.0),
+                              child: SizedBox(
+                                width: 160,
+                                child: Text(
+                                  country['name'],
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ));
+                  }).toList();
+                },
               ),
             ],
           ),
