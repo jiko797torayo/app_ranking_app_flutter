@@ -75,190 +75,133 @@ class _MyAppState extends State<MyApp> {
     getData();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget getRankingBody() {
     if (rankingData == null) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.white,
-        ),
-        home: Scaffold(
-          appBar: AppBar(
-            centerTitle: false,
-            leading: FlatButton(
-              child: Icon(Icons.arrow_drop_down),
-              onPressed: () {
-                // todo
-              },
-            ),
-            title: Text(Constants.type_titles[currentType]),
-            actions: <Widget>[
-              SizedBox(
-                width: 70,
-                child: FlatButton(
-                  child: Image.asset('icons/flags/png/$currentCode.png',
-                      package: 'country_icons'),
-                  onPressed: () {
-                    // todo
-                  },
-                ),
-              ),
-            ],
-          ),
-          body: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CircularProgressIndicator(),
-              ],
-            ),
-          ),
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            CircularProgressIndicator(),
+          ],
         ),
       );
     } else if (rankingData.length == 0) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.white,
-        ),
-        home: Scaffold(
-          appBar: AppBar(
-            centerTitle: false,
-            leading: FlatButton(
-              child: Icon(Icons.arrow_drop_down),
-              onPressed: () {
-                // todo
-              },
+      return Padding(
+          padding: EdgeInsets.all(10), child: Text('Sorry, no data found'));
+    } else {
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.all(12.0),
+                itemCount: rankingData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child:
+                            Image.network(rankingData[index]['artworkUrl100'])),
+                    title: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            '${index + 1} ${rankingData[index]['name']}',
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(rankingData[index]['genres'][0]['name'],
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              )),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      launch(rankingData[index]['url']);
+                    },
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(),
+              ),
             ),
-            title: Text(Constants.type_titles[currentType]),
-            actions: <Widget>[
-              SizedBox(
+          ],
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.white,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          leading: PopupMenuButton<String>(
+            child: Icon(Icons.arrow_drop_down),
+            onSelected: choiceTypeAction,
+            itemBuilder: (BuildContext context) {
+              return Constants.types.map((type) {
+                return PopupMenuItem<String>(
+                  value: type['name'],
+                  child: Text(type['title']),
+                );
+              }).toList();
+            },
+          ),
+          title: Text(Constants.type_titles[currentType]),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              child: SizedBox(
                 width: 70,
                 child: FlatButton(
                   child: Image.asset('icons/flags/png/$currentCode.png',
                       package: 'country_icons'),
-                  onPressed: () {
-                    // todo
-                  },
                 ),
               ),
-            ],
-          ),
-          body: Padding(
-              padding: EdgeInsets.all(10), child: Text('Sorry, no data found')),
-        ),
-      );
-    } else {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: Colors.white,
-        ),
-        home: Scaffold(
-          appBar: AppBar(
-            centerTitle: false,
-            leading: PopupMenuButton<String>(
-              child: Icon(Icons.arrow_drop_down),
-              onSelected: choiceTypeAction,
+              onSelected: choiceCountryAction,
               itemBuilder: (BuildContext context) {
-                return Constants.types.map((type) {
+                return Constants.countries.map((country) {
                   return PopupMenuItem<String>(
-                    value: type['name'],
-                    child: Text(type['title']),
-                  );
-                }).toList();
-              },
-            ),
-            title: Text(Constants.type_titles[currentType]),
-            actions: <Widget>[
-              PopupMenuButton<String>(
-                child: SizedBox(
-                  width: 70,
-                  child: FlatButton(
-                    child: Image.asset('icons/flags/png/$currentCode.png',
-                        package: 'country_icons'),
-                  ),
-                ),
-                onSelected: choiceCountryAction,
-                itemBuilder: (BuildContext context) {
-                  return Constants.countries.map((country) {
-                    return PopupMenuItem<String>(
-                        value: country['code'],
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                              child: Image.asset(
-                                  'icons/flags/png/${country['code']}.png',
-                                  package: 'country_icons'),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: SizedBox(
-                                width: 160,
-                                child: Text(
-                                  country['name'],
-                                  softWrap: false,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ));
-                  }).toList();
-                },
-              ),
-            ],
-          ),
-          body: Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12.0),
-                    itemCount: rankingData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.network(
-                                rankingData[index]['artworkUrl100'])),
-                        title: Column(
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.centerLeft,
+                      value: country['code'],
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 30,
+                            child: Image.asset(
+                                'icons/flags/png/${country['code']}.png',
+                                package: 'country_icons'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: SizedBox(
+                              width: 160,
                               child: Text(
-                                '${index + 1} ${rankingData[index]['name']}',
+                                country['name'],
                                 softWrap: false,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child:
-                                  Text(rankingData[index]['genres'][0]['name'],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      )),
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          launch(rankingData[index]['url']);
-                        },
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(),
-                  ),
-                ),
-              ],
+                          ),
+                        ],
+                      ));
+                }).toList();
+              },
             ),
-          ),
+          ],
         ),
-      );
-    }
+        body: getRankingBody(),
+      ),
+    );
   }
 }
