@@ -27,10 +27,10 @@ class _MyAppState extends State<MyApp> {
   String currentType;
 
   // 非同期処理を定義
-  Future getData({String code = 'us', String type = 'top-free'}) async {
+  Future getData() async {
     // APIを叩いてランキング情報を取得
     http.Response response = await http.get(
-        "https://rss.itunes.apple.com/api/v1/$code/ios-apps/$type/all/200/explicit.json");
+        "https://rss.itunes.apple.com/api/v1/$currentCode/ios-apps/$currentType/all/200/explicit.json");
     if (response.statusCode == 200) {
       // 取得した情報をデコード
       data = json.decode(response.body);
@@ -39,14 +39,10 @@ class _MyAppState extends State<MyApp> {
       // ランキング情報を変数に格納
       setState(() {
         rankingData = feedData["results"];
-        currentCode = code;
-        currentType = type;
       });
     } else {
       setState(() {
         rankingData = [];
-        currentCode = '';
-        currentType = '';
       });
     }
   }
@@ -68,14 +64,15 @@ class _MyAppState extends State<MyApp> {
       rankingData = null;
       currentCode = code;
     });
-    getData(code: code, type: currentType);
+    getData();
   }
 
   void choiceTypeAction(String type) {
     setState(() {
       rankingData = null;
+      currentType = type;
     });
-    getData(code: currentCode, type: type);
+    getData();
   }
 
   @override
@@ -95,7 +92,7 @@ class _MyAppState extends State<MyApp> {
                 // todo
               },
             ),
-            title: const Text('Top Free iPhone Apps'),
+            title: Text(Constants.type_titles[currentType]),
             actions: <Widget>[
               SizedBox(
                 width: 70,
@@ -134,7 +131,7 @@ class _MyAppState extends State<MyApp> {
                 // todo
               },
             ),
-            title: const Text('Top Free iPhone Apps'),
+            title: Text(Constants.type_titles[currentType]),
             actions: <Widget>[
               SizedBox(
                 width: 70,
