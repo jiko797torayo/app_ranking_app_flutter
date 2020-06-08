@@ -8,7 +8,6 @@ import 'Constants.dart'; //定数用ファイル
 
 void main() {
   runApp(MyApp());
-  print(Constants.countries.map((country) => country['name']).toList());
 }
 
 class MyApp extends StatefulWidget {
@@ -56,16 +55,26 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
+    setState(() {
+      currentCode = 'us';
+      currentType = 'top-free';
+    });
     // 情報を取得処理を実行
     getData();
   }
 
   void choiceCountryAction(String code) {
+    setState(() {
+      rankingData = null;
+      currentCode = code;
+    });
     getData(code: code, type: currentType);
   }
 
   void choiceTypeAction(String type) {
+    setState(() {
+      rankingData = null;
+    });
     getData(code: currentCode, type: type);
   }
 
@@ -91,7 +100,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(
                 width: 70,
                 child: FlatButton(
-                  child: Image.asset('icons/flags/png/us.png',
+                  child: Image.asset('icons/flags/png/$currentCode.png',
                       package: 'country_icons'),
                   onPressed: () {
                     // todo
@@ -100,8 +109,14 @@ class _MyAppState extends State<MyApp> {
               ),
             ],
           ),
-          body: Padding(
-              padding: EdgeInsets.all(10), child: Text('Now Loading...')),
+          body: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
         ),
       );
     } else if (rankingData.length == 0) {
@@ -124,7 +139,7 @@ class _MyAppState extends State<MyApp> {
               SizedBox(
                 width: 70,
                 child: FlatButton(
-                  child: Image.asset('icons/flags/png/us.png',
+                  child: Image.asset('icons/flags/png/$currentCode.png',
                       package: 'country_icons'),
                   onPressed: () {
                     // todo
