@@ -20,6 +20,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.7.5
+flutter_icons:
+  android: true
+  ios: true
+  image_path: 'lib/assets/app_ranking_app_logo.png'
 flutter:
   uses-material-design: true
