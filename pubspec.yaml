@@ -2,7 +2,7 @@ name: app_ranking_app
 description: This service allows you to check the latest rankings of iOS apps in each country.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.1.0+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
