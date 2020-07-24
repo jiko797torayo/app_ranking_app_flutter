@@ -263,22 +263,39 @@ class Constants {
     YE,
   ];
 
-  static const Map topFree = {
+  static const Map topFreeApps = {
     'name': 'top-free',
-    'title': 'Top Free iPhone Apps'
+    'title': 'Top Free iOS Apps',
+    'genre': 'all',
   };
-  static const Map topPaid = {
+  static const Map topPaidApps = {
     'name': 'top-paid',
-    'title': 'Top Paid iPhone Apps'
+    'title': 'Top Paid iOS Apps',
+    'genre': 'all',
+  };
+
+  static const Map topFreeGames = {
+    'name': 'top-free',
+    'title': 'Top Free iOS Games',
+    'genre': 'games',
+  };
+  static const Map topPaidGames = {
+    'name': 'top-paid',
+    'title': 'Top Paid iOS Games',
+    'genre': 'games',
   };
 
   static const List types = [
-    topFree,
-    topPaid,
+    topFreeApps,
+    topPaidApps,
+    topFreeGames,
+    topPaidGames,
   ];
 
   static const Map type_titles = {
-    'top-free': 'Top Free iPhone Apps',
-    'top-paid': 'Top Paid iPhone Apps'
+    'top-free-all': 'Top Free iOS Apps',
+    'top-paid-all': 'Top Paid iOS Apps',
+    'top-free-games': 'Top Free iOS Games',
+    'top-paid-games': 'Top Paid iOS Games',
   };
 }

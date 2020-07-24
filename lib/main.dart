@@ -25,12 +25,13 @@ class _MyAppState extends State<MyApp> {
   // 文字列の変数を定義
   String currentCode;
   String currentType;
+  String currentGenre;
 
   // 非同期処理を定義
   Future getData() async {
     // APIを叩いてランキング情報を取得
     http.Response response = await http.get(
-        "https://rss.itunes.apple.com/api/v1/$currentCode/ios-apps/$currentType/all/200/explicit.json");
+        "https://rss.itunes.apple.com/api/v1/$currentCode/ios-apps/$currentType/$currentGenre/200/explicit.json");
     if (response.statusCode == 200) {
       // 取得した情報をデコード
       data = json.decode(response.body);
@@ -54,6 +55,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       currentCode = 'us';
       currentType = 'top-free';
+      currentGenre = 'all';
     });
     // 情報を取得処理を実行
     getData();
@@ -67,10 +69,11 @@ class _MyAppState extends State<MyApp> {
     getData();
   }
 
-  void choiceTypeAction(String type) {
+  void choiceTypeAction(dynamic type) {
     setState(() {
       rankingData = null;
-      currentType = type;
+      currentType = type['name'];
+      currentGenre = type['genre'];
     });
     getData();
   }
@@ -147,19 +150,19 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          leading: PopupMenuButton<String>(
+          leading: PopupMenuButton<dynamic>(
             child: Icon(Icons.arrow_drop_down),
             onSelected: choiceTypeAction,
             itemBuilder: (BuildContext context) {
               return Constants.types.map((type) {
-                return PopupMenuItem<String>(
-                  value: type['name'],
+                return PopupMenuItem<dynamic>(
+                  value: type,
                   child: Text(type['title']),
                 );
               }).toList();
             },
           ),
-          title: Text(Constants.type_titles[currentType]),
+          title: Text(Constants.type_titles['$currentType-$currentGenre']),
           actions: <Widget>[
             PopupMenuButton<String>(
               child: SizedBox(
